@@ -1,3 +1,5 @@
+{% comment %} Custom HTML component product-info - Reference in product-info.js {% endcomment %}
+
 <product-info
   id="MainProduct-{{ section.id }}"
   class="section-{{ section.id }}-padding gradient color-{{ section.settings.color_scheme }}"
@@ -9,6 +11,8 @@
     data-zoom-on-hover
   {% endif %}
 >
+
+{% comment %} Stylesheet imports {% endcomment %}
   {{ 'section-main-product.css' | asset_url | stylesheet_tag }}
   {{ 'component-accordion.css' | asset_url | stylesheet_tag }}
   {{ 'component-price.css' | asset_url | stylesheet_tag }}
@@ -16,6 +20,8 @@
   {{ 'component-rating.css' | asset_url | stylesheet_tag }}
   {{ 'component-deferred-media.css' | asset_url | stylesheet_tag }}
 
+
+  {% comment %} Code for variant picker - swatches are the component that selects variant {% endcomment %}
   {% unless product.has_only_default_variant %}
     {{ 'component-product-variant-picker.css' | asset_url | stylesheet_tag }}
     {{ 'component-swatch-input.css' | asset_url | stylesheet_tag }}
@@ -38,21 +44,28 @@
       }
     }
   {%- endstyle -%}
-
+{% comment %} Javascript for custom HTML component product-info {% endcomment %}
   <script src="{{ 'product-info.js' | asset_url }}" defer="defer"></script>
+  {% comment %} Javascript Custom HTML component product-form {% endcomment %}
   <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+
+  {% comment %} Price goes down if quantity goes up {% endcomment %}
   {%- if product.quantity_price_breaks_configured? -%}
     <script src="{{ 'show-more.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'price-per-item.js' | asset_url }}" defer="defer"></script>
   {%- endif -%}
 
+{% comment %} Javascript for image zoom - based on editor choice {% endcomment %}
   {% if section.settings.image_zoom == 'hover' %}
     <script id="EnableZoomOnHover-main" src="{{ 'magnify.js' | asset_url }}" defer="defer"></script>
   {% endif %}
+
+  {% comment %} Enhancements for theme editor {% endcomment %}
   {%- if request.design_mode -%}
     <script src="{{ 'theme-editor.js' | asset_url }}" defer="defer"></script>
   {%- endif -%}
 
+  {% comment %} If product has a 3D model {% endcomment %}
   {%- assign first_3d_model = product.media | where: 'media_type', 'model' | first -%}
   {%- if first_3d_model -%}
     {{ 'component-product-model.css' | asset_url | stylesheet_tag }}
@@ -72,20 +85,29 @@
     >
   {%- endif -%}
 
+
+  {% comment %} Product media gallery {% endcomment %}
+
+  {% comment %} Assign variant images and creates a new array of variant image src  {% endcomment %}
   {% assign variant_images = product.images | where: 'attached_to_variant?', true | map: 'src' %}
   <div class="page-width">
+
     <div class="product product--{{ section.settings.media_size }} product--{{ section.settings.media_position }} product--{{ section.settings.gallery_layout }} product--mobile-{{ section.settings.mobile_thumbnails }} grid grid--1-col {% if product.media.size > 0 %}grid--2-col-tablet{% else %}product--no-media{% endif %}">
       <div class="grid__item product__media-wrapper">
-        {% render 'product-media-gallery', variant_images: variant_images %}
-      </div>
+    {% render 'product-media-gallery', variant_images: variant_images %}
+    </div>
+    {% comment %} If conditions are met then inside the if statements more classes will be added {% endcomment %}
       <div class="product__info-wrapper grid__item{% if settings.page_width > 1400 and section.settings.media_size == "small" %} product__info-wrapper--extra-padding{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
         <section
           id="ProductInfo-{{ section.id }}"
           class="product__info-container{% if section.settings.enable_sticky_info %} product__column-sticky{% endif %}"
         >
+        {% comment %} Assigns the product form id {% endcomment %}
           {%- assign product_form_id = 'product-form-' | append: section.id -%}
 
+          {% comment %} Renders blocks {% endcomment %}
           {%- for block in section.blocks -%}
+            {% comment %} For each block TYPE render the block {% endcomment %}
             {%- case block.type -%}
               {%- when '@app' -%}
                 {% render block %}
@@ -723,6 +745,12 @@
     </script>
   </div>
 </product-info>
+
+
+<script>
+  const testData = {{ product | json }};
+  console.log(testData);
+</script>
 
 {% schema %}
 {
@@ -2080,7 +2108,7 @@
     {
       "type": "checkbox",
       "id": "enable_sticky_info",
-      "default": true,
+      "default": false,
       "label": "t:sections.main-product.settings.enable_sticky_info.label"
     },
     {
