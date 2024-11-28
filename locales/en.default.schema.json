@@ -1513,6 +1513,9 @@
         "name": "Image with text"
       }
     },
+    "mastering-grid": {
+      "name": "Mastering grid",
+    },
     "multirow": {
       "name": "Multirow",
       "settings": {

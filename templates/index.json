@@ -1,5 +1,8 @@
 {
   "sections": {
+    "mastering-grid": {
+      "type": "mastering-grid",
+    },
     "faq": {
       "type": "faq",
       "blocks": {
@@ -14,7 +17,7 @@
       "settings": {"headline": "Danny's Block"}
     },
   },
-  "order": [
+  "order": ["mastering-grid",
     "faq",
   ]
 }
